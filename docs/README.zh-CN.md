@@ -71,14 +71,15 @@ pnpm i
 
 5. 调试、运行项目
 
-**首次运行或更新内容后**，请先执行 `search:index` 来生成搜索索引：
-
 ```sh
-# 生成搜索索引以供开发时使用
-pnpm run search:index
+# 如果您是第一次部署，请先 build
+pnpm run build
 
 pnpm run dev
 ```
+
+> [!NOTE]
+> 必须 build 之后再启动调试服务器，否则 pagefind 没有索引，搜索功能将失效。
 
 ## 🔧 配置
 

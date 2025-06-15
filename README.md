@@ -69,16 +69,17 @@ cd Frosti
 pnpm i
 ```
 
-### 5. Debug and Run the Project
-
-**On first run or after updating content**, execute `search:index` to generate the search index:
+5. Debug and run the project
 
 ```sh
-# Generate the search index for development use
-pnpm run search:index
+# If this is your first deployment, build first
+pnpm run build
 
 pnpm run dev
 ```
+
+> [!NOTE]
+> You must build before starting the debug server, otherwise pagefind won't have an index, and the search functionality will not work.
 
 ## 🔧 Configuration
 

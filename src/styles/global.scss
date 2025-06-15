@@ -209,7 +209,11 @@ code {
 
   &-content {
     @apply max-h-0 overflow-y-auto;
-    transition: max-height 0.8s;
+    transition: max-height 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+
+    &.expanded {
+      @apply max-h-[500px];
+    }
   }
 }
 
@@ -239,7 +243,7 @@ code {
   }
 
   &-link {
-    @apply flex justify-between items-center p-3 rounded-lg bg-base-200/50 transition-transform;
+    @apply flex justify-between items-center p-3 rounded-lg bg-base-200/50;
 
     &:hover {
       @apply bg-base-200 translate-x-1;
