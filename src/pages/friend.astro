@@ -4,6 +4,11 @@ import { Icon } from "astro-icon/components";
 import MainCard from "@/components/MainCard.astro";
 import LinkCard from "@/components/mdx/LinkCard.astro";
 import FriendCard from "@/components/mdx/FriendCard.astro";
+import Card from "@/components/temple/Card.astro";
+import CardGroup from "@/components/temple/CardGroup.astro";
+import Showcase from "@/components/mdx/Showcase.astro";
+
+const sites = [{ name: "Frosti Demo", url: "https://frosti.saroprock.com/" }];
 ---
 
 <BaseLayout title="Friends">
@@ -168,6 +173,6 @@ import FriendCard from "@/components/mdx/FriendCard.astro";
           <span>写点留言</span>
         </a>
       </div>
-    </div>
-  </MainCard>
+    </Card>
+  </CardGroup>
 </BaseLayout>
