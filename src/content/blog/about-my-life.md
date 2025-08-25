@@ -2,7 +2,7 @@
 title: 在艳阳下
 description: 关于我暑假的零散小记和学年小结
 pubDate: 08 1 2025
-image: /image/image3.jpg
+image: /image/image1.jpg
 categories:
   - life
 tags:
