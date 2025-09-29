@@ -1,7 +1,7 @@
 ---
 title: 域名与服务器
 description: 我与我的域名与我的服务器
-pubDate: 05 08 2025
+pubDate: 05 8 2025
 image: /image/image4.jpg
 categories:
   - life
