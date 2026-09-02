@@ -2,7 +2,7 @@
 title: 算法小记-回溯算法及其模板应用
 description: 最近有在学习一些算法题，决定记录一些途中的经验和思考，就以回溯算法作为开头吧
 pubDate: 01 23 2026
-image: /image/image1.jpg
+image: /image/image6.jpg
 categories:
   - tech
 tags:
