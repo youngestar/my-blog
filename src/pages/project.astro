@@ -1,9 +1,9 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Icon } from "astro-icon/components";
 import MainCard from "@/components/MainCard.astro";
 import GitHubStats from "@/components/mdx/GitHubStats.astro";
 import RepositoryCard from "@/components/mdx/RepositoryCard.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Projects">
@@ -20,7 +20,7 @@ import RepositoryCard from "@/components/mdx/RepositoryCard.astro";
         <span>Featured Projects</span>
       </h2>
 
-      <GitHubStats username="EveSunMaple" repositoryName="Frosti" showLanguages={true} showContributors={true} />
+      <GitHubStats username="EveSunMaple" repositoryName="Frosti" />
     </section>
 
     <!-- My Repositories -->

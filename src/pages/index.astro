@@ -1,42 +1,19 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Icon } from "astro-icon/components";
 import MainCard from "@/components/MainCard.astro";
 import GitHubStats from "@/components/mdx/GitHubStats.astro";
-import type { Post } from "@interfaces/data";
 import PostCard from "@components/PostCard.astro";
 import CardGroup from "@components/temple/CardGroup.astro";
-import { getCollection } from "astro:content";
+import type { Post } from "@interfaces/data";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getAllPosts, getPostsWithStats, sortPostsByPinAndDate } from "@utils/blogUtils";
 
-const allPosts = await getCollection("blog");
+const allPosts = await getAllPosts();
+const sortedPosts = sortPostsByPinAndDate(allPosts);
 
-// 如果为生产环境排除草稿
-const posts = import.meta.env.PROD ? allPosts.filter((post) => !post.data.draft) : allPosts;
-
-const topPosts = posts.filter((blog: any) => blog.data.badge === "Pin");
-const otherPosts = posts.filter((blog: any) => blog.data.badge !== "Pin");
-
-topPosts.sort((a: any, b: any) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-otherPosts.sort((a: any, b: any) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const sortedPosts = [...topPosts, ...otherPosts];
-
-// 最大展示数目
-const maxLength: number = 3;
-const showingBlogs: number = sortedPosts.length < maxLength ? sortedPosts.length : maxLength;
-
-const postsWithStats = await Promise.all(
-  sortedPosts.map(async (blog: any) => {
-    const { remarkPluginFrontmatter } = await blog.render();
-    return {
-      ...blog,
-      remarkPluginFrontmatter: {
-        readingTime: remarkPluginFrontmatter.readingTime,
-        totalCharCount: remarkPluginFrontmatter.totalCharCount,
-      },
-    };
-  }),
-);
+const maxLength = 3;
+const showingBlogs = Math.min(sortedPosts.length, maxLength);
+const postsWithStats = await getPostsWithStats(sortedPosts);
 ---
 
 <BaseLayout title="Home">
@@ -65,8 +42,7 @@ const postsWithStats = await Promise.all(
               <Icon name="lucide:book-open" class="w-5 h-5" />
               <span>探索一下</span>
             </a>
-            <!-- 后续更新请替换为博客链接 -->
-            <a href="https://github.com/youngestar" target="_blank" class="btn btn-outline gap-2">
+            <a href="https://github.com/youngestar" target="_blank" rel="noopener noreferrer" class="btn btn-outline gap-2">
               <Icon name="lucide:github" class="w-5 h-5" />
               <span>看看 GitHub</span>
             </a>
@@ -89,7 +65,7 @@ const postsWithStats = await Promise.all(
                   title={blog.data.title}
                   image={blog.data.image}
                   description={blog.data.description}
-                  url={"/blog/" + blog.slug}
+                  url={"/blog/" + blog.id}
                   pubDate={blog.data.pubDate}
                   badge={blog.data.badge}
                   categories={blog.data.categories}
@@ -120,7 +96,7 @@ const postsWithStats = await Promise.all(
           <Icon name="lucide:github" class="w-6 h-6 text-primary" />
           <span>github 主页</span>
         </h2>
-        <GitHubStats username="Youngestar" showLanguages={true} showContributors={true} />
+        <GitHubStats username="Youngestar" />
       </section>
     </div>
   </MainCard>

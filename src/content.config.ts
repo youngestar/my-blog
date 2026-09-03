@@ -1,7 +1,12 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 const blog = defineCollection({
-  type: "content",
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/blog",
+  }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -12,13 +17,13 @@ const blog = defineCollection({
     draft: z.boolean().default(false),
     categories: z
       .array(z.string())
-      .refine((items) => new Set(items).size === items.length, {
+      .refine((items: string[]) => new Set(items).size === items.length, {
         message: "categories must be unique",
       })
       .optional(),
     tags: z
       .array(z.string())
-      .refine((items) => new Set(items).size === items.length, {
+      .refine((items: string[]) => new Set(items).size === items.length, {
         message: "tags must be unique",
       })
       .optional(),

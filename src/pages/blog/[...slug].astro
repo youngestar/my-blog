@@ -1,33 +1,50 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
+import { type CollectionEntry, getCollection, render } from "astro:content";
 import License from "@components/widgets/License.astro";
-import PostInfo from "@components/widgets/PostInfo.astro";
 import PostFilter from "@components/widgets/PostFilter.astro";
-import { type CollectionEntry, getCollection } from "astro:content";
-import dayjs from "@utils/dayjs";
+import PostInfo from "@components/widgets/PostInfo.astro";
 import { DATE_FORMAT } from "@config";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import dayjs from "@utils/dayjs";
 import MainCard from "@/components/MainCard.astro";
+import "katex/dist/katex.min.css";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
-  return posts.map((blog: { slug: any }) => ({
-    params: { slug: blog.slug },
+
+  const filteredPosts = import.meta.env.PROD
+    ? posts.filter((post: CollectionEntry<"blog">) => !post.data.draft)
+    : posts;
+
+  return filteredPosts.map((blog: CollectionEntry<"blog">) => ({
+    params: { slug: blog.id },
     props: { blog },
   }));
 }
+
 interface Props {
   blog: CollectionEntry<"blog">;
 }
 
 const { blog } = Astro.props;
-const { Content, remarkPluginFrontmatter, headings } = await blog.render();
-const displayDate = blog.data.pubDate ? dayjs(blog.data.pubDate).format(DATE_FORMAT) : "";
-const url = new URL(`/${blog.slug}`, Astro.url.origin);
+const { Content, remarkPluginFrontmatter, headings } = await render(blog);
+const displayDate = blog.data.pubDate
+  ? dayjs(blog.data.pubDate).format(DATE_FORMAT)
+  : "";
+const image = new URL(`/og/${blog.id}.png`, Astro.site).toString();
+const url = new URL(`/blog/${blog.id}`, Astro.site ?? Astro.url.origin);
 ---
 
-<BaseLayout title={blog.data.title} image={blog.data.image} headings={headings} showTOC={true}>
+<BaseLayout
+  title={blog.data.title}
+  description={blog.data.description}
+  image={image}
+  headings={headings}
+  showTOC={true}
+  ogType="article"
+  pubDate={blog.data.pubDate}
+>
   <MainCard title={blog.data.title} description={blog.data.description} image={blog.data.image} infoIcon="lucide:info">
-    <!-- Article info using PostInfo component -->
     <PostInfo
       pubDate={displayDate}
       badge={blog.data.badge}
@@ -35,12 +52,10 @@ const url = new URL(`/${blog.slug}`, Astro.url.origin);
       time={remarkPluginFrontmatter.readingTime}
     />
 
-    <!-- Categories and tags using PostFilter component -->
     <div class="mb-6">
       <PostFilter categories={blog.data.categories} tags={blog.data.tags} />
     </div>
 
-    <!-- Article Content -->
     <div class="mt-8">
       <div id="content" class="prose max-w-none prose-headings:scroll-mt-20 prose-img:rounded-xl prose-img:mx-auto">
         <Content />
