@@ -1,0 +1,50 @@
+# Required repository secrets: SERVER_HOST, SERVER_USER, SSH_PRIVATE_KEY
+# Optional: SERVER_PORT (defaults to 22)
+# Change REMOTE_PATH if Nginx root is not /var/www/blog/
+
+name: Deploy to server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      REMOTE_PATH: /var/www/blog/
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+
+      - uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          PORT="${{ secrets.SERVER_PORT }}"
+          PORT="${PORT:-22}"
+          ssh-keyscan -p "$PORT" -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Rsync dist to server
+        run: |
+          PORT="${{ secrets.SERVER_PORT }}"
+          PORT="${PORT:-22}"
+          rsync -avz --delete \
+            -e "ssh -p ${PORT} -o StrictHostKeyChecking=yes" \
+            dist/ \
+            "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${REMOTE_PATH}"
