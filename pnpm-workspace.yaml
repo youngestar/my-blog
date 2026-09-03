@@ -21,6 +21,14 @@ overrides:
   fast-uri: "^3.1.5"
   "picomatch@2": "2.3.2"
   "picomatch@4": "4.0.4"
+  browserslist: ">=4.28.7"
+  deepmerge-ts: ">=8.0.0"
+
+# extract-zip has no patched npm release (latest is 2.0.1). It is only used
+# by @iconify/tools at build time, not for extracting untrusted archives.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-jmr9-qjv8-65gv
 
 onlyBuiltDependencies:
   - esbuild

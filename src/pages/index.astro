@@ -1,12 +1,16 @@
 ---
-import { Icon } from "astro-icon/components";
-import MainCard from "@/components/MainCard.astro";
-import GitHubStats from "@/components/mdx/GitHubStats.astro";
 import PostCard from "@components/PostCard.astro";
 import CardGroup from "@components/temple/CardGroup.astro";
 import type { Post } from "@interfaces/data";
+import {
+  getAllPosts,
+  getPostsWithStats,
+  sortPostsByPinAndDate,
+} from "@utils/blogUtils";
+import { Icon } from "astro-icon/components";
+import MainCard from "@/components/MainCard.astro";
+import GitHubStats from "@/components/mdx/GitHubStats.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { getAllPosts, getPostsWithStats, sortPostsByPinAndDate } from "@utils/blogUtils";
 
 const allPosts = await getAllPosts();
 const sortedPosts = sortPostsByPinAndDate(allPosts);
